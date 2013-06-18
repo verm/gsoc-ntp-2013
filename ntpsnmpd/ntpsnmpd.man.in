@@ -1,0 +1,175 @@
+.TH ntpsnmpd @NTPSNMPD_MS@ "01 May 2013" "4.2.7p368" "User Commands"
+.\"
+.\"  EDIT THIS FILE WITH CAUTION  (ntpsnmpd-opts.man)
+.\"
+.\"  It has been AutoGen-ed  May  1, 2013 at 11:34:12 AM by AutoGen 5.17.3
+.\"  From the definitions    ntpsnmpd-opts.def
+.\"  and the template file   agman-cmd.tpl
+.\"
+.SH NAME
+ntpsnmpd \- NTP SNMP MIB agent
+.SH SYNOPSIS
+.B ntpsnmpd
+.\" Mixture of short (flag) options and long options
+.RB [ \-\fIflag\fP " [\fIvalue\fP]]... [" \-\-\fIopt\-name\fP "[[=| ]\fIvalue\fP]]..."
+.PP
+All arguments must be options.
+.PP
+.SH DESCRIPTION
+.B 
+is an SNMP MIB agent designed to interface with
+.Xr ntpd @NTPD_MS@ .
+.SH "OPTIONS"
+.TP
+.BR \-n ", " \-\-nofork
+Do not fork.
+.sp
+.TP
+.BR \-p ", " \-\-syslog
+Log to syslog().
+.sp
+.TP
+.BR \-\-agentxsocket "=\fIstring\fP"
+The socket address ntpsnmpd uses to connect to net-snmpd.
+The default \fIstring\fP for this option is:
+.ti +4
+ unix:/var/agentx/master
+.sp
+[<transport-specifier>:]<transport-address>
+The default "agent X socket" is the Unix Domain socket
+\fIunix:/var/agentx/master\fP.
+Another common alternative is \fItcp:localhost:705\fP.
+.TP
+.BR \-? , " \-\-help"
+Display usage information and exit.
+.TP
+.BR \-! , " \-\-more-help"
+Pass the extended usage information through a pager.
+.TP
+.BR \-> " [\fIrcfile\fP]," " \-\-save-opts" "[=\fIrcfile\fP]"
+Save the option state to \fIrcfile\fP.  The default is the \fIlast\fP
+configuration file listed in the \fBOPTION PRESETS\fP section, below.
+.TP
+.BR \-< " \fIrcfile\fP," " \-\-load-opts" "=\fIrcfile\fP," " \-\-no-load-opts"
+Load options from \fIrcfile\fP.
+The \fIno-load-opts\fP form will disable the loading
+of earlier RC/INI files.  \fI\-\-no-load-opts\fP is handled early,
+out of order.
+.TP
+.BR \- " [{\fIv|c|n\fP}]," " \-\-version" "[=\fI{v|c|n}\fP]"
+Output version of program and exit.  The default mode is `v', a simple
+version.  The `c' mode will print copyright information and `n' will
+print the full copyright notice.
+.SH "OPTION PRESETS"
+Any option that is not marked as \fInot presettable\fP may be preset
+by loading values from configuration ("RC" or ".INI") file(s) and values from
+environment variables named:
+.nf
+  \fBNTPSNMPD_<option-name>\fP or \fBNTPSNMPD\fP
+.fi
+.ad
+The environmental presets take precedence (are processed later than)
+the configuration files.
+The \fIhomerc\fP files are "\fI$HOME\fP", and "\fI.\fP".
+If any of these are directories, then the file \fI.ntprc\fP
+is searched for within those directories.
+cvt_prog='/usr/local/gnu/share/autogen/texi2man'
+cvt_prog=`cd \`dirname "$cvt_prog"\` >/dev/null && pwd
+         `/`basename "$cvt_prog"`
+cd $tmp_dir
+test \-x "$cvt_prog" || die "'$cvt_prog' is not executable"
+{
+    list='synopsis description options option-presets'
+    for f in $list ; do cat $f ; echo ; done
+    rm \-f $list name
+    list='implementation-notes environment files examples exit-status errors
+        compatibility see-also conforming-to history authors copyright bugs
+        notes'
+    for f in $list ; do cat $f ; echo ; done > .end-doc
+    rm \-f $list
+    list=`ls \-1 *`' .end-doc'
+    for f in $list ; do cat $f ; echo ; done
+    rm \-f $list
+} 1>.doc 2>/dev/null
+sed \-f .cmds .doc | /usr/local/gnu/bin/grep \-E \-v '^[ 	]*$' | $cvt_prog
+.SH USAGE
+.B 
+currently uses a private MIB OID,
+.Ql enterprises.5597 ,
+which is the Meinberg top level OEM OID, and
+.Ql 99
+is the temporary working space for this project. 
+The final OID has to be registered with IANA
+and this is done by the RFC Editor
+when the NTPv4 MIB RFC is standardized. 
+.PP
+If you have
+.Xr snmpwalk 1
+installed you can run
+.Dl % snmpwalk \-v2c \-c public localhost enterprises.5597.99
+to see a list of all currently supported NTP MIB objects
+and their current values.
+.SH "ENVIRONMENT"
+See \fBOPTION PRESETS\fP for configuration environment variables.
+.SH "FILES"
+See \fBOPTION PRESETS\fP for configuration files.
+.SH "EXIT STATUS"
+One of the following exit values will be returned:
+.TP
+.BR 0 " (EXIT_SUCCESS)"
+Successful program execution.
+.TP
+.BR 1 " (EXIT_FAILURE)"
+The operation failed or the command syntax was not valid.
+.TP
+.BR 66 " (EX_NOINPUT)"
+A specified configuration file could not be loaded.
+.TP
+.BR 70 " (EX_SOFTWARE)"
+libopts had an internal operational error.  Please report
+it to autogen-users@lists.sourceforge.net.  Thank you.
+.SH AUTHORS
+.An "Heiko Gerstung"
+.SH "COPYRIGHT"
+Copyright (C) 1970-2013 The University of Delaware all rights reserved.
+This program is released under the terms of the NTP license, <http://ntp.org/license>.
+.SH "BUGS"
+Please send bug reports to: http://bugs.ntp.org, bugs@ntp.org
+.SH NOTES
+The following objects are currently supported:
+.PP
+.TP
+.BR Li ntpEntSoftwareName
+please fill me in...
+.TP
+.BR Li ntpEntSoftwareVersion
+please fill me in...
+.TP
+.BR Li ntpEntSoftwareVersionVal
+please fill me in...
+.TP
+.BR Li ntpEntSoftwareVendor
+please fill me in...
+.TP
+.BR Li ntpEntSystemType
+please fill me in...
+.TP
+.BR Li ntpEntTimeResolution
+please fill me in...
+.TP
+.BR Li ntpEntTimeResolutionVal
+please fill me in...
+.TP
+.BR Li ntpEntTimePrecision
+please fill me in...
+.TP
+.BR Li ntpEntTimePrecisionVal
+please fill me in...
+.TP
+.BR Li ntpEntTimeDistance
+please fill me in...
+.PP
+This document corresponds to version 4.2.7p368 of NTP.
+.PP
+This manual page was \fIAutoGen\fP-erated from the \fBntpsnmpd\fP
+option definitions.

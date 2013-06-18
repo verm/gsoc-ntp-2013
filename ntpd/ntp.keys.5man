@@ -1,0 +1,140 @@
+.TH ntp.keys 5man "01 May 2013" "4.2.7p368" "File Formats"
+.\"
+.\"  EDIT THIS FILE WITH CAUTION  (ntp.man)
+.\"
+.\"  It has been AutoGen-ed  May  1, 2013 at 11:33:10 AM by AutoGen 5.17.3
+.\"  From the definitions    ntp.keys.def
+.\"  and the template file   agman-file.tpl
+.\"
+.SH NAME
+ntp.keys \- NTP symmetric key file format configuration file
+.SH SYNOPSIS
+.B /etc/ntp.keys
+.PP 
+.PP
+.SH DESCRIPTION
+This document describes the format of an NTP symmetric key file.
+For a description of the use of this type of file, see the
+.Qq Authentication Support
+section of the
+.Xr ntp.conf 5
+page.
+.PP
+.Xr ntpd 8
+reads its keys from a file specified using the
+k
+command line option or the
+.Ic keys
+statement in the configuration file.
+While key number 0 is fixed by the NTP standard
+(as 56 zero bits)
+and may not be changed,
+one or more keys numbered between 1 and 65534
+may be arbitrarily set in the keys file.
+.PP
+The key file uses the same comment conventions
+as the configuration file.
+Key entries use a fixed format of the form
+.PP
+.D1 Ar keyno type key
+.PP
+where
+\fIkeyno\fR
+is a positive integer (between 1 and 65534),
+\fItype\fR
+is the message digest algorithm,
+and
+\fIkey\fR
+is the key itself.
+.PP
+The
+\fIkey\fR
+may be given in a format
+controlled by the
+\fItype\fR
+field.
+The
+\fItype\fR
+.Li MD5
+is always supported.
+If
+.Li ntpd
+was built with the OpenSSL library
+then any digest library supported by that library may be specified.
+However, if compliance with FIPS 140-2 is required the
+\fItype\fR
+must be either
+.Li SHA
+or
+.Li SHA1 .
+.PP
+What follows are some key types, and corresponding formats:
+.PP
+.TP
+.BR Li MD5
+The key is 1 to 16 printable characters terminated by
+an EOL,
+whitespace,
+or
+a
+.Li #
+(which is the "start of comment" character).
+.PP
+.TP
+.BR Li SHA
+.TP
+.BR Li SHA1
+.TP
+.BR Li RMD160
+The key is a hex-encoded ASCII string of 40 characters,
+which is truncated as necessary.
+.PP
+Note that the keys used by the
+.Xr ntpq 8
+and
+.Xr ntpdc 8
+programs are checked against passwords
+requested by the programs and entered by hand,
+so it is generally appropriate to specify these keys in ASCII format.
+cvt_prog='/usr/local/gnu/share/autogen/texi2man'
+cvt_prog=`cd \`dirname "$cvt_prog"\` >/dev/null && pwd
+         `/`basename "$cvt_prog"`
+cd $tmp_dir
+test \-x "$cvt_prog" || die "'$cvt_prog' is not executable"
+{
+    list='synopsis description options option-presets'
+    for f in $list ; do cat $f ; echo ; done
+    rm \-f $list name
+    list='implementation-notes environment files examples exit-status errors
+        compatibility see-also conforming-to history authors copyright bugs
+        notes'
+    for f in $list ; do cat $f ; echo ; done > .end-doc
+    rm \-f $list
+    list=`ls \-1 *`' .end-doc'
+    for f in $list ; do cat $f ; echo ; done
+    rm \-f $list
+} 1>.doc 2>/dev/null
+sed \-f .cmds .doc | /usr/local/gnu/bin/grep \-E \-v '^[ 	]*$' | $cvt_prog
+.SH FILES
+.TP
+.BR Pa /etc/ntp.keys
+the default name of the configuration file
+.SH "SEE ALSO"
+.Xr ntp.conf 5 ,
+.Xr ntpd 1ntpdmdoc ,
+.Xr ntpdate 1ntpdatemdoc ,
+.Xr ntpdc 1ntpdcmdoc ,
+.Xr sntp 1sntpmdoc
+.SH "AUTHORS"
+The University of Delaware
+.SH "COPYRIGHT"
+Copyright (C) 1970-2013 The University of Delaware all rights reserved.
+This program is released under the terms of the NTP license, <http://ntp.org/license>.
+.SH "BUGS"
+Please send bug reports to: http://bugs.ntp.org, bugs@ntp.org
+.SH NOTES
+This document corresponds to version 4.2.7p368 of NTP.
+This document was derived from FreeBSD.
+.PP
+This manual page was \fIAutoGen\fP-erated from the \fBntp.keys\fP
+option definitions.
