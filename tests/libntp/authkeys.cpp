@@ -49,6 +49,37 @@ protected:
 	}
 };
 
+/* Add by Yan */
+TEST_F(authkeysTest, PreallocSymkeys) {
+	u_long count;
+
+    count = (authnumkeys + authnumfreekeys);
+
+	auth_prealloc_symkeys(count);
+
+    /* check the total key counts will NOT change */
+	EXPECT_EQ(count, authnumkeys + authnumfreekeys);
+}
+
+/* Add by Yan */
+TEST_F(authkeysTest, PreallocMoreSymkeys) {
+	u_long pre_keys, pre_freekeys, addition;
+
+    pre_keys = authnumkeys;
+    pre_freekeys = authnumfreekeys;
+    addition = 2;
+
+	auth_prealloc_symkeys(pre_keys + pre_freekeys + addition);
+
+    /* check the authnumfreekeys will change */
+	EXPECT_EQ(pre_keys , authnumkeys);
+    EXPECT_EQ(pre_freekeys + addition, authnumfreekeys);
+
+    /* clean out keys, set environment for next UT case */
+    auth_delkeys();
+}
+
+
 TEST_F(authkeysTest, AddTrustedKeys) {
 	const keyid_t KEYNO1 = 5;
 	const keyid_t KEYNO2 = 8;
