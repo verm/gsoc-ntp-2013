@@ -29,6 +29,7 @@ tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
 		atoint.cpp		\
 		atouint.cpp		\
 		authkeys.cpp		\
+		authreadkeys.cpp    \
 		buftvtots.cpp		\
 		calendar.cpp		\
 		caljulian.cpp		\
