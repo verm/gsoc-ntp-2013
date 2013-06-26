@@ -37,6 +37,7 @@ tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
 		calyearstart.cpp	\
 		clocktime.cpp		\
 		decodenetnum.cpp	\
+		emalloc.cpp             \
 		hextoint.cpp		\
 		hextolfp.cpp		\
 		humandate.cpp		\
