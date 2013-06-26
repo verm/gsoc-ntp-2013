@@ -1,4 +1,4 @@
-/* This file contains test for both libntp/authkeys.c and libntp/authusekey.c */
+/* This file contains test for both libntp/authreadkeys.c */
 
 #include "libntptest.h"
 
@@ -16,13 +16,8 @@ static int authReadHaveConfig;
 
 class authReadkeysTest : public libntptest {
 protected:
-	static const int KEYTYPE = KEY_TYPE_MD5;    
 
 	virtual void SetUp() {
-
-        const char *pConfig = "1 M test";
-        FILE    *fp; 
-        int writebytes, configlen;
 
 		/*
 		 * init_auth() is called by tests_main.cpp earlier.  It
@@ -40,23 +35,6 @@ protected:
 		cache_secret = NULL;
 		cache_secretsize = 0;
 
-        /* Write an easy useable config file */
-        authReadHaveConfig = 0;
-        fp = fopen("KeyConfigFile", "w");
-        writebytes = 0;
-        if (NULL != fp)
-        {
-            writebytes = fputs(pConfig, fp);
-            fclose(fp);
-        }
-        configlen = strlen(pConfig);
-        if (configlen == writebytes)
-        {
-            /* If successfully wrote the config file, 
-               then we will test the real read key function*/
-            authReadHaveConfig = 1;
-        }
-        
 	}
 
 };
@@ -75,12 +53,29 @@ TEST_F(authReadkeysTest, KeyFileNotExist) {
 
 /* Add by Yan */
 TEST_F(authReadkeysTest, LoadOneConfigSuccess) {
-    const char *pConfig = "KeyConfigFile";
+    const char *pConfigFile = "KeyConfigFile";    
+    const char *pConfig = "1 M test";
+    FILE    *fp;     
 	int res;
 
+    /* Write an easy useable config file */
+    authReadHaveConfig = 0;
+    fp = fopen("KeyConfigFile", "w");
+    if (NULL != fp)
+    {
+        res = fputs(pConfig, fp);
+        fclose(fp);
+    }
+    if (0 < res)
+    {
+        /* If successfully wrote the config file, 
+           then we will test the real read key function*/
+        authReadHaveConfig = 1;
+    }
+    
     if (authReadHaveConfig)
     {
-        res = authreadkeys(pConfig);
+        res = authreadkeys(pConfigFile);
         
         /* confirm the return value is 1 and an auth key exist*/
         EXPECT_EQ(res, 1);
