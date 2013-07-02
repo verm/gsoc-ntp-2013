@@ -135,3 +135,59 @@ TEST_F(msyslogTest, msnprintfTruncate)
 	EXPECT_STREQ(exp_buf + 3, undist);
 	EXPECT_STREQ(act_buf + 3, undist);
 }
+
+TEST_F(msyslogTest, addtosyslog)
+{
+	char	syslogmsg[] = "syslog test\n";
+    char    actlog[128] = "";
+    char    syslogfile[] = "syslog";
+    int     logoffset;
+    FILE*   prefile = NULL;
+    int     prelogtime;
+    int     prelogpid;
+    int     prelogit;
+
+    prelogtime = msyslog_include_timestamp;
+    prelogpid = msyslog_term_pid;
+    prelogit = syslogit;
+    
+    msyslog_include_timestamp = FALSE;
+    msyslog_term_pid = FALSE;
+    syslogit = FALSE;
+
+    if (NULL != syslog_file)
+    {
+        prefile = syslog_file;
+    }
+    syslog_file = fopen(syslogfile,"w");
+    if (NULL == syslog_file)
+    {
+        return;
+    }
+        
+	addto_syslog(LOG_DEBUG, syslogmsg);
+
+    fclose(syslog_file);
+
+    syslog_file = fopen(syslogfile,"r");
+    if (NULL == syslog_file)
+    {
+        return;
+    }
+    fgets(actlog, sizeof(actlog), syslog_file);
+    fclose(syslog_file);
+
+    logoffset = strlen(actlog) - strlen(syslogmsg);
+	EXPECT_STREQ(syslogmsg, actlog + logoffset);
+    
+    msyslog_include_timestamp = prelogtime;
+    msyslog_term_pid = prelogpid;
+    syslogit = prelogit;
+
+    if (NULL != prefile)
+    {
+        syslog_file = prefile;
+    }
+    
+}
+
