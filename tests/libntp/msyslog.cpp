@@ -8,6 +8,8 @@ extern "C" {
 // format_errmsg() is normally private to msyslog.c
 void	format_errmsg	(char *, size_t, const char *, int);
 #endif
+void addto_syslog(int		level, const char *	msg);
+
 };
 
 class msyslogTest : public libntptest {
