@@ -27,15 +27,22 @@ protected:
 /* Note, if defined EREALLOC_CALLSITE, that means we are using debug mode.
    In fact, there is no need to test string dump in debug mode. */
 TEST_F(emallocTest, TestStringDump) {
-#ifndef EREALLOC_CALLSITE
     const char *teststr = "TestStringDump";
     char *newstring;
 	size_t	bytes;
     int i,res;
+#ifdef EREALLOC_CALLSITE
+	const char *	file = "./strdump";
+	int		line =1;
+#endif
 
 	bytes = strlen(teststr) + 1;
 
-    newstring = estrdup_impl(teststr);
+    newstring = estrdup_impl(teststr
+#ifdef EREALLOC_CALLSITE
+        ,file, line
+#endif
+        );
 
     /* if newstring == NULL, program will exit automatically,
        so don't need to worry about that case */
@@ -51,6 +58,5 @@ TEST_F(emallocTest, TestStringDump) {
     
     /* confirm that every byte has been copied correctly */
 	EXPECT_EQ(res, 0);
-#endif
 }
 
