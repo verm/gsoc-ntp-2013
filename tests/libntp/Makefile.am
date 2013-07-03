@@ -55,6 +55,7 @@ tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
 		socktoa.cpp		\
 		ssl_init.cpp		\
 		statestr.cpp		\
+                strl_obsd.cpp           \
 		strtolfp.cpp		\
 		timespecops.cpp		\
 		timestructs.cpp		\
