@@ -5,7 +5,12 @@ CLEANFILES =
 check_PROGRAMS = tests
 
 LDADD =					\
-        $(top_builddir)/ntpd/version.o  \
+	$(top_builddir)/ntpd/version.o  \
+	$(top_srcdir)/ntpd/ntp_config.o		\
+	$(top_srcdir)/ntpd/ntp_io.o		\
+	$(top_srcdir)/ntpd/ntp_scanner.o		\
+	$(top_srcdir)/ntpd/ntpd-opts.o		\
+	$(top_srcdir)/ntpd/ntp_parser.o  \
 	$(top_builddir)/ntpd/libntpd.a	\
 	$(top_builddir)/libntp/libntp.a	\
 	$(LDADD_LIBNTP)			\
@@ -35,17 +40,22 @@ AM_LDFLAGS = $(LDFLAGS_NTP)
 AM_LDFLAGS += -lgcov
 
 tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
-        ntpdtest.cpp            \
-        cmd_args.cpp		\
-	$(top_srcdir)/ntpd/ntp_config.c		\
-	$(top_srcdir)/ntpd/ntp_keyword.h		\
-	$(top_srcdir)/ntpd/ntp_io.c		\
-	$(top_srcdir)/ntpd/ntp_scanner.c		\
-	$(top_srcdir)/ntpd/ntp_scanner.h		\
-	$(top_srcdir)/ntpd/ntpd-opts.c		\
 	$(top_srcdir)/ntpd/ntpd.c	\
-        $(NULL)
+	ntpdtest.cpp            \
+	cmd_args.cpp		\
+	ntp_config.cpp		\
+	$(NULL)
 
+#	$(top_srcdir)/ntpd/ntp_parser.y				
+#	$(top_srcdir)/sntp/libopts/usage.c  \
+#	$(top_srcdir)/ntpd/ntp_config.c		\
+#	$(top_srcdir)/ntpd/ntp_keyword.h		\
+#	$(top_srcdir)/ntpd/ntp_io.c		\
+#	$(top_srcdir)/ntpd/ntp_scanner.c		\
+#	$(top_srcdir)/ntpd/ntp_scanner.h		\
+#	$(top_srcdir)/ntpd/ntpd-opts.c		\
+#	$(top_srcdir)/ntpd/ntpd-opts.h		
+		
 noinst_HEADERS = ntpdtest.h	\
 			     $(NULL)
 
