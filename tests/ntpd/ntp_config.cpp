@@ -1,31 +1,15 @@
 /* ntp_config.cpp = unit test cases for ntpd config processing */
-#include "libntptest.h"
+#include "ntpdtest.h"
 
 /* these following segments are copied from ntp_config.c */
 extern "C" {
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
-#ifdef HAVE_NETINFO
-# include <netinfo/ni.h>
-#endif
-
-#include <stdio.h>
-#include <ctype.h>
-#ifdef HAVE_SYS_PARAM_H
-# include <sys/param.h>
-#endif
-#include <signal.h>
-#ifndef SIGCHLD
-# define SIGCHLD SIGCLD
-#endif
-#ifdef HAVE_SYS_WAIT_H
-# include <sys/wait.h>
-#endif
-
-#include <isc/net.h>
-#include <isc/result.h>
+/* previously defined in /stnp/config.h */
+#undef   PACKAGE
+#undef   PACKAGE_NAME
+#undef   PACKAGE_STRING
+#undef   PACKAGE_TARNAME
+#undef   RETSIGTYPE
 
 #include "ntp.h"
 #include "ntpd.h"
@@ -69,7 +53,7 @@ TEST_F(ntpConfigTest, GenFifoWithNewBuf) {
     res = append_gen_fifo(fifo, entry);
 
     /* a new block of memory have been allocated */
-	EXPECT_NE(NULL, res);
+	EXPECT_NE((void*)NULL, res);
 
     free(res);
 }
@@ -85,7 +69,7 @@ TEST_F(ntpConfigTest, CreateAttrIval) {
 
     /* check values in the struct */
 	EXPECT_EQ(attr, res->attr);
-	EXPECT_EQ(ival, res->ival);
+	EXPECT_EQ(ival, res->value.i);
 	EXPECT_EQ(T_Integer, res->type);
 
     free(res);
@@ -131,13 +115,14 @@ TEST_F(ntpConfigTest, CreateAttrRangeval) {
 /* Test create attr_sval struct with NULL pointer */
 TEST_F(ntpConfigTest, CreateNullAttrSval) {  
 	attr_val *res;
+    int attr;
 
     attr = 4;
     res = create_attr_sval(attr, NULL);
 
     /* check values in the struct */
 	EXPECT_EQ(attr, res->attr);
-	EXPECT_NE(NULL, res->value.s);
+	EXPECT_NE((void*)NULL, res->value.s);
 	EXPECT_EQ(T_String, res->type);
 
     free(res);
@@ -146,7 +131,8 @@ TEST_F(ntpConfigTest, CreateNullAttrSval) {
 /* Test create attr_sval struct with NULL pointer */
 TEST_F(ntpConfigTest, CreateRealAttrSval) {  
 	attr_val *res;
-    char *strtest = "test";
+    char strtest[] = "test";
+    int attr;
 
     attr = 4;
     res = create_attr_sval(attr, strtest);
@@ -176,7 +162,7 @@ TEST_F(ntpConfigTest, CreateIntNode) {
 /* Test create string node */
 TEST_F(ntpConfigTest, CreateStringNode) {  
 	string_node *res;
-    char *strtest = "test";
+    char strtest[] = "test";
 
     res = create_string_node(strtest);
 
@@ -187,53 +173,80 @@ TEST_F(ntpConfigTest, CreateStringNode) {
 }
 
 /* Test create address node */
-TEST_F(ntpConfigTest, CreateAddrNode) {  
+TEST_F(ntpConfigTest, CreateAddrNodeV4) {  
 	address_node *res;
     int type = AF_INET;
-    char *addr = "192.168.1.1";
+    char addr[] = "192.168.1.1";
 
     res = create_address_node(addr, type);
 
-    /* check values in the struct */
-	EXPECT_EQ(addr, res->address);
-	EXPECT_EQ(type, res->type);
-
-    free(res);
+    if (NULL != res)
+    {
+        /* check values in the struct */
+        EXPECT_EQ(addr, res->address);
+        EXPECT_EQ(type, res->type);
+        
+        free(res);
+    }
 }
 
 /* Test create address node */
-TEST_F(ntpConfigTest, CreateAddrNode) {  
+TEST_F(ntpConfigTest, CreateAddrNodeV6) {  
 	address_node *res;
-    int type = AF_INET;
-    char *addr = "192.168.1.1";
+    int type = AF_INET6;
+    char addr[] = "EA:FC::11:22";
 
     res = create_address_node(addr, type);
 
-    /* check values in the struct */
-	EXPECT_EQ(addr, res->address);
-	EXPECT_EQ(type, res->type);
+    if (NULL != res)
+    {
+        /* check values in the struct */
+        EXPECT_EQ(addr, res->address);
+        EXPECT_EQ(type, res->type);
+        
+        free(res);
+    }
 
-    free(res);
 }
 
 /* Test create peer node */
-TEST_F(ntpConfigTest, CreatePeerNode) {  
-	peer_node *res;
+TEST_F(ntpConfigTest, CreatePeerNode) { 
+	peer_node *res = NULL;
     address_node *addrnode;
     int type = AF_INET;
     int hmode = 1;
-    char *addr = "192.168.1.1";
-    attr_val_fifo fifo[1];
+    char addr[] = "192.168.1.1";
+    attr_val_fifo fifo;
+
+    attr_val *p_attr_val;
+    char strtest[] = "test";
+    int attr;
+
+    attr = 4;
+    p_attr_val = create_attr_sval(attr, strtest);
 
     addrnode = create_address_node(addr, type);
-    fifo[0].attr = T_Flag;    
+    if (NULL == addrnode)
+    {
+        return;
+    }
 
-    res = create_peer_node(hmode, addrnode, fifo);
+    HEAD_FIFO(fifo) = p_attr_val;
+    fifo.pptail = &p_attr_val;
+    
+    p_attr_val->link = NULL;
+    p_attr_val->attr = (int)T_Flag;   
+    
+    // res = create_peer_node(hmode, addrnode, &fifo);
 
-    /* check values in the struct */
-	EXPECT_EQ(addr, res->addr);
-	EXPECT_EQ(hmode, res->host_mode);
+    if (NULL != res)
+    {
+        /* check values in the struct */
+    	EXPECT_EQ(addr, res->addr->address);
+    	EXPECT_EQ(hmode, res->host_mode);
 
-    free(res);
+        free(res);
+    }
+    free(addrnode);
 }
 

@@ -2,16 +2,22 @@
 #include "ntpdtest.h"
 
 extern "C" {
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
 
 #include "ntpd.h"
 #include "ntp_stdlib.h"
 #include "ntp_config.h"
 #include "ntp_cmdargs.h"
 
+/* previously defined in /stnp/config.h */
+#undef   PACKAGE
+#undef   PACKAGE_NAME
+#undef   PACKAGE_STRING
+#undef   PACKAGE_TARNAME
+#undef   RETSIGTYPE
 #include "ntpd-opts.h"
+
+#include <autoopts/options.h>
+
 
 /* option desc for ntpd opts */
 extern tOptions ntpdOptions;
