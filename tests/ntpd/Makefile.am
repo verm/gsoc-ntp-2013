@@ -40,7 +40,7 @@ AM_LDFLAGS = $(LDFLAGS_NTP)
 AM_LDFLAGS += -lgcov
 
 tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
-	$(top_srcdir)/ntpd/ntpd.c	\
+	$(top_srcdir)/ntpd/main.c	\
 	ntpdtest.cpp            \
 	cmd_args.cpp		\
 	ntp_config.cpp		\

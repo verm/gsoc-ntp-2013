@@ -198,7 +198,8 @@ ntpd_SOURCES =			\
 	ntp_parser.y		\
 	ntp_scanner.c		\
 	ntp_scanner.h		\
-	ntpd.c			\
+	main.c			\
+	ntpd.c                  \
 	ntpd-opts.c		\
 	ntpd-opts.h		\
 	$(NULL)
