@@ -2,7 +2,7 @@
 
 extern "C" {
 #include "kod_management.h"
-#include "main.h"
+#include "sntp.h"
 #include "networking.h"
 #include "ntp.h"
 };

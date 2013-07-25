@@ -2,7 +2,7 @@
 #include "fileHandlingTest.h"
 
 extern "C" {
-#include "main.h"
+#include "sntp.h"
 #include "utilities.h"
 const char * Version = "stub unit test Version string";
 };

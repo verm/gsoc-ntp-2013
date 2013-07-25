@@ -77,14 +77,14 @@ libsntp_a_SOURCES =		\
 	crypto.c		\
 	kod_management.c	\
 	log.c			\
-	main.c			\
+	sntp.c			\
 	networking.c		\
 	sntp-opts.c		\
 	utilities.c		\
 	$(NULL)
 
 sntp_SOURCES =		\
-	sntp.c		\
+	main.c		\
 	$(NULL)
 
 noinst_HEADERS =		\
@@ -92,7 +92,7 @@ noinst_HEADERS =		\
 	data_formats.h		\
 	kod_management.h	\
 	log.h			\
-	main.h			\
+	sntp.h			\
 	networking.h		\
 	sntp-opts.h		\
 	tests_main.h		\
