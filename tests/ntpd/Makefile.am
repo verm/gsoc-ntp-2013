@@ -33,17 +33,20 @@ AM_CPPFLAGS += -I$(top_srcdir)/ntpd
 AM_CPPFLAGS += $(GTEST_CPPFLAGS)
 AM_CPPFLAGS += $(CPPFLAGS_NTP)
 #add by YN
-AM_CPPFLAGS += -fprofile-arcs -ftest-coverage
+#AM_CPPFLAGS += -fprofile-arcs -ftest-coverage
 
 AM_LDFLAGS = $(LDFLAGS_NTP)
 #add by YN
-AM_LDFLAGS += -lgcov
+#AM_LDFLAGS += -lgcov
 
 tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
 	$(top_srcdir)/ntpd/ntpd.c	\
 	ntpdtest.cpp            \
+	ntp_monitor.cpp         \
 	cmd_args.cpp		\
 	ntp_config.cpp		\
+	ntp_control.cpp		\
+	ntp_filegen.cpp         \
 	$(NULL)
 
 #	$(top_srcdir)/ntpd/ntp_parser.y				

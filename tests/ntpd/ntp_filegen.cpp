@@ -1,12 +1,8 @@
 /* test cases for ntp_filegen.c */
-#include "libntptest.h"
+#include "ntpdtest.h"
      
  /* these following segments are copied from ntp_filegen.c */
  extern "C" {
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -20,36 +16,32 @@
 };
 
 class ntpFileGenTest : public ntpdtest {
-    char *      dir;
-    char *      name;
-    FILEGEN *   pgen;
-    FILEGEN     filegen;
-
 protected:
-
 	virtual void SetUp() {
-        dir = ".";
-        name = "FileGenTest";
-        pgen = &filegen;
         return;
 	}
 
 };
 
+static int ntpFileGenTestpreTestSuccess;
+static FILEGEN   ntpFileGenTestRealGen;
+
 /* Test File Gen Reg function */
 TEST_F(ntpFileGenTest, FileGenRegister) {  
     FILEGEN * FileGen;
+    char       dir[] = ".";
+    char       name[] = "FileGenTest";
 
     /* check status before reg */
     FileGen = filegen_get(name);
 	EXPECT_EQ(NULL, FileGen);
 
     /* check status afterfore reg */
-    filegen_register(dir, name, pgen);
+    filegen_register(dir, name, &ntpFileGenTestRealGen);
     FileGen = filegen_get(name);
 
     /* check values in the struct */
-	EXPECT_NE(NULL, FileGen);
+	EXPECT_NE((FILEGEN *)NULL, FileGen);
     EXPECT_STREQ(FileGen->dir, dir);
     EXPECT_STREQ(FileGen->fname, name);
 }
@@ -58,23 +50,33 @@ TEST_F(ntpFileGenTest, FileGenRegister) {
    Using the result from the last test, FileGenRegister */
 TEST_F(ntpFileGenTest, FileGenConfig) {  
     FILEGEN * FileGen;
+    char       dir[] = ".";
+    char       name[] = "FileGenTest";
 
     FileGen = filegen_get(name);
 
     /* check values in the struct */
-	if(NULL == FileGen)
-        return;
+	if(NULL != FileGen)
+    { 
+        /* change the FileGen type */
+        filegen_config(FileGen, dir, name,
+                       FILEGEN_NONE, 
+                       FileGen->flag);
+        
+        EXPECT_EQ(FileGen->type, FILEGEN_NONE);
+    }
+    else
+    {
+        ntpFileGenTestpreTestSuccess = 0;
+    }
 
-    /* change the FileGen type */
-    filegen_config(FileGen, dir, name, FILEGEN_NONE, FileGen->flag);
-    
-    EXPECT_STREQ(FileGen->type, FILEGEN_NONE);
 }
 
 /* Test File Gen Setup function,
    Using the result from the last test, FileGenConfig */
 TEST_F(ntpFileGenTest, FileGenSetup) {  
     FILEGEN * FileGen;
+    char       name[] = "FileGenTest";
 
     FileGen = filegen_get(name);
 
@@ -82,21 +84,24 @@ TEST_F(ntpFileGenTest, FileGenSetup) {
 	if(NULL == FileGen)
         return;
 
+    FileGen->flag = FGEN_FLAG_ENABLED;
+
     /* change the FileGen type */
     filegen_setup(FileGen, 0);
 
     /* Check File have been opened */
-    EXPECT_NE(FileGen->fp, NULL);
+    EXPECT_NE(FileGen->fp, (FILE *)NULL);
 
     /* Clean status */
     fclose(FileGen->fp);
     FileGen->fp = NULL;
 }
 
-#ifdef DEBUG
 /* Test File Gen Unreg function */
 TEST_F(ntpFileGenTest, FileGenUnReg) {  
+#ifdef DEBUG
     FILEGEN * FileGen;
+    char       name[] = "FileGenTest";
 
     /* unreg FileGen */
     filegen_unregister(name);
@@ -104,8 +109,7 @@ TEST_F(ntpFileGenTest, FileGenUnReg) {
     FileGen = filegen_get(name);
 
     /* Check FileGen have been Unreged */
-    EXPECT_EQ(FileGen, NULL);
-}
+    EXPECT_EQ(FileGen, (FILEGEN *)NULL);
 
 #endif
-
+}
