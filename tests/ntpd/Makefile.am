@@ -42,6 +42,7 @@ AM_LDFLAGS = $(LDFLAGS_NTP)
 tests_SOURCES = $(top_srcdir)/sntp/tests_main.cpp	\
 	$(top_srcdir)/ntpd/ntpd.c	\
 	ntpdtest.cpp            \
+	ntp_peer.cpp            \
 	ntp_monitor.cpp         \
 	cmd_args.cpp		\
 	ntp_config.cpp		\
